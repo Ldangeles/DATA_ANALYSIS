@@ -6,122 +6,283 @@ lifestore_products = [id_product, name, price, category, stock]
 
 from lifestore_file import lifestore_products, lifestore_sales, lifestore_searches
 
-#-------------------------SALES--------------------------------#
-soldproduct = []; refundeditem = []; 
-totalsales=0; totalrefunds=0
-timesold = []; productsnotsold = []; mostsoldproduct = []; leastsoldproduct = []
+#-------------------LOGIN---------------------------------#
+username = "Manager123"
+password = "lif3stor3"
+tries = 0; Acces = False
 
-def Extract(soldproduct):
-    return [item[1] for item in lifestore_sales]
+while not Acces:
+    tries += 1
 
-soldproduct = Extract(soldproduct)
-
-for i in range(0,len(soldproduct)):
-    if int(lifestore_sales[i][-1]) == 0:                    #Verifying it was not a refund
-        totalsales+=lifestore_products[soldproduct[i]][2]   #Adding up the total sales
+    if tries == 4:
+        exit()
+    if input('Username: ') == username and input('Password: ') == password:
+        Acces = True
+        print('Acces Granted')
     else:
-        refundeditem.append(soldproduct[i])                 #ID product refunded
-        totalrefunds+=lifestore_products[soldproduct[i]][2] #Total lost in refunds
+        print(f'You have {3 - tries} tries lefts')
 
-#print("El total de ventas es de $" + str(totalsales)) #Total of sales
-#print("El total de devoluciones es de $" + str(totalrefunds)) #Total of refunds
+#-------------------------SALES--------------------------------#
+soldproduct = []; timesold = []
 
-for i in range(0,len(lifestore_products)):
-    timesold.append(soldproduct.count(i+1))             #Zero doesnt count
-    if timesold[i] == 0:
-        productsnotsold.append(lifestore_products[i][1])
+soldproduct = [sale[1] for sale in lifestore_sales]
 
-templist = timesold.copy()                         #Templist         
+for sale in lifestore_products: #Creating a nested list
+    nested=[]
+    timesold.append(nested)
+    for k in range(1):
+        nested.append(sale[0])
+        nested.append(sale[1])
+        nested.append(soldproduct.count(sale[0])) #Counting times sold
+        nested.append(sale[-2])
+
+def Sort(timesold): #timesold is [id_product, name, time_sold, category]
+    timesold.sort(key = lambda x: x[2])
+    return timesold
+
+timesold = Sort(timesold) # Ascendant order
+
 print("\n MOST SOLD PRODUCTS")
-for i in range(0,5):                                    #Obtaining the 5 most sold products                               
-    max_idx = templist.index(max(templist))
-    mostsoldproduct.append(max_idx)
-    templist[max_idx]=0                                 #Erasing last most sold product
-    print("ID: "+str(lifestore_products[mostsoldproduct[i]][0])+"\t NAME: "+lifestore_products[mostsoldproduct[i]][1])
 
-templist = timesold.copy()                        #Reset templist 
-print("\n LEAST SOLD PRODUCTS")
-for i in range(0,5):                                    #Obtaining the 5 least sold products
-    min_idx = templist.index(min(templist))
-    leastsoldproduct.append(min_idx)
-    templist[min_idx]=1000                              #Erasing last least sold product
-    print("ID: "+str(lifestore_products[leastsoldproduct[i]][0])+"\t NAME: "+lifestore_products[leastsoldproduct[i]][1])
+for i in [-1,-2,-3,-4,-5]:
+    print( F'ID: {timesold[i][0]}\t NAME: {timesold[i][1]}\t SALES: {timesold[i][2]}' )
 
+#print("\n LEAST SOLD PRODUCTS")
+
+#for i in range(0,5):
+#    print( F'ID: {timesold[i][0]}\t NAME: {timesold[i][1]}\t SALES: {timesold[i][2]}' )
+
+#-------------------------SALES PER CATERGORY--------------------------------#
+categories= []
+processors = []; gpus = []; motherboards = []; drives = []; usb = []; screens = []; speakers = []; headphones = []
+
+categories= [item[-2] for item in lifestore_products]
+
+categories = list(dict.fromkeys(categories))
+
+for item in timesold:
+    if categories[0] in item:
+        processors.append(item[:3])
+    elif categories[1] in item:
+        gpus.append(item[:3])
+    elif categories[2] in item:
+        motherboards.append(item[:3])
+    elif categories[3] in item:
+        drives.append(item[:3])
+    elif categories[4] in item:
+        usb.append(item[:3])
+    elif categories[5] in item:
+        screens.append(item[:3])
+    elif categories[6] in item:
+        speakers.append(item[:3])
+    elif categories[7] in item:
+        headphones.append(item[:3])
+
+print("\n LEAST SOLD PROCESSORS")
+for i in range(5):
+    print(f"ID: {processors[i][0]}\t NAME: {processors[i][1]}\t TIMES SOLD: {processors[i][-1]}")
+
+print("\n LEAST SOLD GPUS")
+for i in range(5):
+    print(f"ID: {gpus[i][0]}\t NAME: {gpus[i][1]}\t TIMES SOLD: {gpus[i][-1]}")
+
+print("\n LEAST SOLD MOTHERBOARDS")
+for i in range(5):
+    print(f"ID: {motherboards[i][0]}\t NAME: {motherboards[i][1]}\t TIMES SOLD: {motherboards[i][-1]}")
+
+print("\n LEAST SOLD DRIVES")
+for i in range(5):
+    print(f"ID: {drives[i][0]}\t NAME: {drives[i][1]}\t TIMES SOLD: {drives[i][-1]}")
+
+print("\n LEAST SOLD USB")
+for i in range(2):
+    print(f"ID: {usb[i][0]}\t NAME: {usb[i][1]}\t TIMES SOLD: {usb[i][-1]}")
+
+print("\n LEAST SOLD SCREENS")
+for i in range(5):
+    print(f"ID: {screens[i][0]}\t NAME: {screens[i][1]}\t TIMES SOLD: {screens[i][-1]}")
+
+print("\n LEAST SOLD SPEAKERS")
+for i in range(5):
+    print(f"ID: {speakers[i][0]}\t NAME: {speakers[i][1]}\t TIMES SOLD: {speakers[i][-1]}")
+
+print("\n LEAST SOLD HEADPHONES")
+for i in range(5):
+    print(f"ID: {headphones[i][0]}\t NAME: {headphones[i][1]}\t TIMES SOLD: {headphones[i][-1]}")
 
 #-------------------------SEARCHES--------------------------------#
-searchedproduct = []; timesearched = []; mostsearchedproduct = []; leastsearchedproduct = []
+searchedproduct = []; timesearched = []
 
-def Extract(searchedproduct):
-    return [item[1] for item in lifestore_searches]
+searchedproduct = [search[1] for search in lifestore_searches]
 
-searchedproduct = Extract(searchedproduct)
+for search in lifestore_products: #Creating a nested list
+    nested=[]
+    timesearched.append(nested)
+    for k in range(1):
+        nested.append(search[0]) #Saving ID
+        nested.append(search[1]) #Saving Name
+        nested.append(searchedproduct.count(search[0])) #Counting times searched
+        nested.append(search[-2]) #Saving Category
+        
+def Sort(timesearched):
+    timesearched.sort(key = lambda x: x[2])
+    return timesearched
 
-for i in range(0,len(lifestore_products)):
-    timesearched.append(searchedproduct.count(i+1))
+timesearched = Sort(timesearched)
 
-templist = timesearched.copy()                          #Templist
 print("\n MOST SEARCHED PRODUCTS")
-for i in range(0,10):                               #Obtaining the 10 most searched products
-    max_idx = templist.index(max(templist))
-    mostsearchedproduct.append(max_idx)
-    templist[max_idx]=0                             #Erasing last most searched product
-    print("ID: "+str(lifestore_products[mostsearchedproduct[i]][0])+"\t NAME: "+lifestore_products[mostsearchedproduct[i]][1])
+for i in [-1,-2,-3,-4,-5]:
+    print( F'ID: {timesearched[i][0]}\t NAME: {timesearched[i][1]}\t SEARCHES: {timesearched[i][-1]}' )
 
-templist = timesearched.copy()                        #Reset templist
-print("\n LEAST SEARCHED PRODUCTS")
-for i in range(0,10):                               #Obtaining the 10 least searched products
-    min_idx = templist.index(min(templist))
-    leastsearchedproduct.append(min_idx)
-    templist[min_idx]=1000                          #Erasing last least searched product
-    print("ID: "+str(lifestore_products[leastsearchedproduct[i]][0])+"\t NAME: "+lifestore_products[leastsearchedproduct[i]][1])
+#print("\n LEAST SEARCHED PRODUCTS")
+#for i in range(0,10):
+#    print( F'ID: {timesearched[i][0]}\t NAME: {timesearched[i][1]}\t SEARCHES: {timesearched[i][-1]}' )
 
-#print(searchedproduct); print(timesearched)
+#-------------------------SEARCHES PER CATERGORY--------------------------------#
+processors = []; gpus = []; motherboards = []; drives = []; usb = []; screens = []; speakers = []; headphones = []
 
-#----------------------REVIEWS--------------------
+for item in timesearched:
+    if categories[0] in item:
+        processors.append(item[:3])
+    elif categories[1] in item:
+        gpus.append(item[:3])
+    elif categories[2] in item:
+        motherboards.append(item[:3])
+    elif categories[3] in item:
+        drives.append(item[:3])
+    elif categories[4] in item:
+        usb.append(item[:3])
+    elif categories[5] in item:
+        screens.append(item[:3])
+    elif categories[6] in item:
+        speakers.append(item[:3])
+    elif categories[7] in item:
+        headphones.append(item[:3])
 
-#print(timesold)
-tempsum=0; totalscore = [];averagescorewID = []; ratedproducts = []
-bestratedproduct = []; worstratedproduct = []
+print("\n LEAST SEARCHED PROCESSORS")
+for i in range(9):
+    print(f"ID: {processors[i][0]}\t NAME: {processors[i][1]}\t TIMES SEARCHED: {processors[i][-1]}")
 
-for i in range(0,len(lifestore_products)): #Adding up review scores
+print("\n LEAST SEARCHED GPUS")
+for i in range(10):
+    print(f"ID: {gpus[i][0]}\t NAME: {gpus[i][1]}\t TIMES SEARCHED: {gpus[i][2]}")
+
+print("\n LEAST SEARCHED MOTHERBOARDS")
+for i in range(10):
+    print(f"ID: {motherboards[i][0]}\t NAME: {motherboards[i][1]}\t TIMES SEARCHED: {motherboards[i][-1]}")
+
+print("\n LEAST SEARCHED DRIVES")
+for i in range(10):
+    print(f"ID: {drives[i][0]}\t NAME: {drives[i][1]}\t TIMES SEARCHED: {drives[i][-1]}")
+
+print("\n LEAST SEARCHED USB")
+for i in range(2):
+    print(f"ID: {usb[i][0]}\t NAME: {usb[i][1]}\t TIMES SEARCHED: {usb[i][-1]}")
+
+print("\n LEAST SEARCHED SCREENS")
+for i in range(10):
+    print(f"ID: {screens[i][0]}\t NAME: {screens[i][1]}\t TIMES SEARCHED: {screens[i][-1]}")
+
+print("\n LEAST SEARCHED SPEAKERS")
+for i in range(10):
+    print(f"ID: {speakers[i][0]}\t NAME: {speakers[i][1]}\t TIMES SEARCHED: {speakers[i][-1]}")
+
+print("\n LEAST SEARCHED HEADPHONES")
+for i in range(10):
+    print(f"ID: {headphones[i][0]}\t NAME: {headphones[i][1]}\t TIMES SEARCHED: {headphones[i][-1]}")
+
+
+#----------------------REVIEWS--------------------------#
+tempsum=0; totalscore = []; averagescore = []
+
+for i in range(0,len(lifestore_products)): 
     for k in range(0,len(lifestore_sales)):
-        if lifestore_sales[k][1]==i+1:
-            tempsum += lifestore_sales[k][2]
+        if lifestore_sales[k][1]==timesold[i][0]:
+            tempsum += lifestore_sales[k][2] #Adding up review scores
     
     totalscore.append(tempsum)
     tempsum=0
 
-for i in range(0,len(lifestore_products)):
-    nested = []
-    averagescorewID.append(nested)
-    if timesold[i]>0:
+for review in lifestore_products: #Creating a nested list
+    nested=[]
+    if timesold[review[0]-1][2] > 0: #Obtaining reviews from products sold at least once
+        averagescore.append(nested)
         for k in range(1):
-            nested.append(i+1)
-            nested.append(totalscore[i]/timesold[i])
-    else:
-        for l in range(1):
-            nested.append(i+1)
-            nested.append(-1)
+            nested.append(review[0])
+            nested.append(review[1])
+            nested.append(totalscore[review[0]-1]/timesold[review[0]-1][2]) #Obtaining average
 
-for i in range(0,len(averagescorewID)):
-    if averagescorewID[i][1]>0:
-        ratedproducts.append(averagescorewID[i][1])
+def Sort(averagescore):
+    averagescore.sort(key = lambda x: x[2])
+    return averagescore
 
-templist = ratedproducts.copy()  
+averagescore = Sort(averagescore)
 
 print("\n BEST RATED PRODUCTS")
-for i in range(0,5):                               #Obtaining the 10 most searched products
-    max_idx = templist.index(max(templist))
-    bestratedproduct.append(max_idx)
-    templist[max_idx]=0                             #Erasing last most searched product
-    print("ID: "+str(lifestore_products[bestratedproduct[i]][0])+"\t NAME: "+lifestore_products[bestratedproduct[i]][1])
 
-templist = ratedproducts.copy() 
+for i in [-1,-2,-3,-4,-5]:
+    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][2]}' )
 
 print("\n WORST RATED PRODUCTS")
-for i in range(0,5):                               #Obtaining the 5 best rated products
-    min_idx = templist.index(min(templist))
-    worstratedproduct.append(min_idx)
-    templist[min_idx]=1000                            #Erasing last most searched product
-    print("ID: "+str(lifestore_products[worstratedproduct[i]][0])+"\t NAME: "+lifestore_products[worstratedproduct[i]][1])
 
+for i in range(0,5):
+    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][2]}' )
+
+#----------------------SALES PER MONTH--------------------------#
+from datetime import datetime
+import calendar
+
+refundeditem = []; totalrefunds = 0
+totalsales = 0; monthsales = [0]*12
+
+date = [sale[3] for sale in lifestore_sales]
+
+soldproduct = [sale[1] for sale in lifestore_sales]
+
+date.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y')) # Sort the dates in order 
+
+month =calendar.month_name[1:]
+
+for i in range(0,len(lifestore_sales)):
+    if int(lifestore_sales[i][-1]) == 0:                    #Verifying it was not a refund
+        totalsales+=lifestore_products[soldproduct[i]][2]   #Adding up the total sales
+        if "/01/" in date[i]:
+            monthsales[0]+=lifestore_products[soldproduct[i]][2]
+        elif "/02/" in date[i]:
+            monthsales[1]+=lifestore_products[soldproduct[i]][2]
+        elif "/03/" in date[i]:
+            monthsales[2]+=lifestore_products[soldproduct[i]][2]
+        elif "/04/" in date[i]:
+            monthsales[3]+=lifestore_products[soldproduct[i]][2]
+        elif "/05/" in date[i]:
+            monthsales[4]+=lifestore_products[soldproduct[i]][2]
+        elif "/06/" in date[i]:
+            monthsales[5]+=lifestore_products[soldproduct[i]][2]
+        elif "/07/" in date[i]:
+            monthsales[6]+=lifestore_products[soldproduct[i]][2]
+        elif "/08/" in date[i]:
+            monthsales[7]+=lifestore_products[soldproduct[i]][2]
+        elif "/09/" in date[i]:
+            monthsales[8]+=lifestore_products[soldproduct[i]][2]
+        elif "/10/" in date[i]:
+            monthsales[9]+=lifestore_products[soldproduct[i]][2]
+        elif "/11/" in date[i]:
+            monthsales[10]+=lifestore_products[soldproduct[i]][2]
+        elif "/12/" in date[i]:
+            monthsales[11]+=lifestore_products[soldproduct[i]][2]
+    else:
+        refundeditem.append(soldproduct[i])                 #ID product refunded
+        totalrefunds+=lifestore_products[soldproduct[i]][2] #Total lost in refunds
+
+salesxmonth = [list(l) for l in zip(month, monthsales)]
+
+def Sort(salesxmonth):
+    salesxmonth.sort(key = lambda x: x[1])
+    return salesxmonth
+
+salesxmonth = Sort(salesxmonth)
+
+print("\n MOST PROFITABLE MONTHS")
+
+for i in [-1,-2,-3,-4,-5]:
+    print( F'MONTH: {salesxmonth[i][0]}\t SALES: {"${:,.2f}".format(salesxmonth[i][1])}' )
