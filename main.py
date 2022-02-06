@@ -11,6 +11,7 @@ username = "Manager123"
 password = "lif3stor3"
 tries = 0; Acces = False
 
+"""
 while not Acces:
     tries += 1
 
@@ -21,7 +22,7 @@ while not Acces:
         print('Acces Granted')
     else:
         print(f'You have {3 - tries} tries lefts')
-
+"""
 #-------------------------SALES--------------------------------#
 soldproduct = []; timesold = []
 
@@ -43,7 +44,6 @@ def Sort(timesold): #timesold is [id_product, name, time_sold, category]
 timesold = Sort(timesold) # Ascendant order
 
 print("\n MOST SOLD PRODUCTS")
-
 for i in [-1,-2,-3,-4,-5]:
     print( F'ID: {timesold[i][0]}\t NAME: {timesold[i][1]}\t SALES: {timesold[i][2]}' )
 
@@ -210,79 +210,111 @@ for review in lifestore_products: #Creating a nested list
         for k in range(1):
             nested.append(review[0])
             nested.append(review[1])
+            nested.append(timesold[review[0]-1][2]) #Times reviewed
             nested.append(totalscore[review[0]-1]/timesold[review[0]-1][2]) #Obtaining average
 
 def Sort(averagescore):
-    averagescore.sort(key = lambda x: x[2])
+    averagescore.sort(key = lambda x: x[-1])
     return averagescore
 
 averagescore = Sort(averagescore)
 
 print("\n BEST RATED PRODUCTS")
-
-for i in [-1,-2,-3,-4,-5]:
-    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][2]}' )
+for i in range(-1,-11,-1):
+    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][-1]}\t TIMES REVIEWED: {averagescore[i][2]}' )
 
 print("\n WORST RATED PRODUCTS")
-
-for i in range(0,5):
-    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][2]}' )
+for i in range(0,10):
+    print( F'ID: {averagescore[i][0]}\t NAME: {averagescore[i][1]}\t SCORE: {averagescore[i][-1]}\t TIMES REVIEWED: {averagescore[i][2]}' )
 
 #----------------------SALES PER MONTH--------------------------#
-from datetime import datetime
-import calendar
-
-refundeditem = []; totalrefunds = 0
-totalsales = 0; monthsales = [0]*12
-
+from datetime import datetime; import calendar
 date = [sale[3] for sale in lifestore_sales]
-
-soldproduct = [sale[1] for sale in lifestore_sales]
-
 date.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y')) # Sort the dates in order 
 
 month =calendar.month_name[1:]
+
+refundeditem = []; totalrefunds = 0; averageticket = []
+totalsales = 0; monthsales = [0]*12;  monthprofit = [0]*12
+
+soldproduct = [sale[1] for sale in lifestore_sales]
 
 for i in range(0,len(lifestore_sales)):
     if int(lifestore_sales[i][-1]) == 0:                    #Verifying it was not a refund
         totalsales+=lifestore_products[soldproduct[i]][2]   #Adding up the total sales
         if "/01/" in date[i]:
-            monthsales[0]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[0]+=lifestore_products[soldproduct[i]][2]
+            monthsales[0]+=1
         elif "/02/" in date[i]:
-            monthsales[1]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[1]+=lifestore_products[soldproduct[i]][2]
+            monthsales[1]+=1
         elif "/03/" in date[i]:
-            monthsales[2]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[2]+=lifestore_products[soldproduct[i]][2]
+            monthsales[2]+=1
         elif "/04/" in date[i]:
-            monthsales[3]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[3]+=lifestore_products[soldproduct[i]][2]
+            monthsales[3]+=1
         elif "/05/" in date[i]:
-            monthsales[4]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[4]+=lifestore_products[soldproduct[i]][2]
+            monthsales[4]+=1
         elif "/06/" in date[i]:
-            monthsales[5]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[5]+=lifestore_products[soldproduct[i]][2]
+            monthsales[5]+=1
         elif "/07/" in date[i]:
-            monthsales[6]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[6]+=lifestore_products[soldproduct[i]][2]
+            monthsales[6]+=1
         elif "/08/" in date[i]:
-            monthsales[7]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[7]+=lifestore_products[soldproduct[i]][2]
+            monthsales[7]+=1
         elif "/09/" in date[i]:
-            monthsales[8]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[8]+=lifestore_products[soldproduct[i]][2]
+            monthsales[8]+=1
         elif "/10/" in date[i]:
             monthsales[9]+=lifestore_products[soldproduct[i]][2]
+            monthsales[9]+=1
         elif "/11/" in date[i]:
-            monthsales[10]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[10]+=lifestore_products[soldproduct[i]][2]
+            monthsales[10]+=1
         elif "/12/" in date[i]:
-            monthsales[11]+=lifestore_products[soldproduct[i]][2]
+            monthprofit[11]+=lifestore_products[soldproduct[i]][2]
+            monthsales[11]+=1
     else:
         refundeditem.append(soldproduct[i])                 #ID product refunded
         totalrefunds+=lifestore_products[soldproduct[i]][2] #Total lost in refunds
 
-salesxmonth = [list(l) for l in zip(month, monthsales)]
+for i in range(12): 
+    if monthsales[i] > 0:
+        averageticket.append(monthprofit[i]/monthsales[i]) #Obtaining average
+    else:
+        averageticket.append(0)
 
-def Sort(salesxmonth):
+salesxmonth = [list(l) for l in zip(month, monthprofit, monthsales, averageticket)]
+
+def Sort(salesxmonth): #Sort for profit
     salesxmonth.sort(key = lambda x: x[1])
     return salesxmonth
-
 salesxmonth = Sort(salesxmonth)
 
 print("\n MOST PROFITABLE MONTHS")
-
 for i in [-1,-2,-3,-4,-5]:
-    print( F'MONTH: {salesxmonth[i][0]}\t SALES: {"${:,.2f}".format(salesxmonth[i][1])}' )
+    print( F'MONTH: {salesxmonth[i][0]}\t PROFIT: {"${:,.2f}".format(salesxmonth[i][1])}\t SALES: {salesxmonth[i][2]}\t AVERAGE: {salesxmonth[i][-1]}' )
+
+def Sort(salesxmonth): #Sort for sales
+    salesxmonth.sort(key = lambda x: x[2])
+    return salesxmonth
+salesxmonth = Sort(salesxmonth)
+
+print("\n MOST SALES PER MONTHS")
+for i in [-1,-2,-3,-4,-5]:
+    print( F'MONTH: {salesxmonth[i][0]}\t PROFIT: {"${:,.2f}".format(salesxmonth[i][1])}\t SALES: {salesxmonth[i][2]}\t AVERAGE: {salesxmonth[i][-1]}' )
+
+def Sort(salesxmonth): #Sort for average ticket
+    salesxmonth.sort(key = lambda x: x[-1])
+    return salesxmonth
+salesxmonth = Sort(salesxmonth)
+
+print("\n HIGHEST AVERAGE TICKET PER MONTH")
+for i in [-1,-2,-3,-4,-5]:
+    print( F'MONTH: {salesxmonth[i][0]}\t PROFIT: {"${:,.2f}".format(salesxmonth[i][1])}\t SALES: {salesxmonth[i][2]}\t AVERAGE: {salesxmonth[i][-1]}' )
+
+print(salesxmonth)
