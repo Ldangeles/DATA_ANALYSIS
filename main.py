@@ -11,7 +11,6 @@ username = "Manager123"
 password = "lif3stor3"
 tries = 0; Acces = False
 
-"""
 while not Acces:
     tries += 1
 
@@ -22,7 +21,7 @@ while not Acces:
         print('Acces Granted')
     else:
         print(f'You have {3 - tries} tries lefts')
-"""
+
 #-------------------------SALES--------------------------------#
 soldproduct = []; timesold = []
 
@@ -132,78 +131,88 @@ timesearched = Sort(timesearched)
 
 print("\n MOST SEARCHED PRODUCTS")
 for i in [-1,-2,-3,-4,-5]:
-    print( F'ID: {timesearched[i][0]}\t NAME: {timesearched[i][1]}\t SEARCHES: {timesearched[i][-1]}' )
+    print( F'ID: {timesearched[i][0]}\t NAME: {timesearched[i][1]}\t SEARCHES: {timesearched[i][-2]}' )
 
 #print("\n LEAST SEARCHED PRODUCTS")
 #for i in range(0,10):
 #    print( F'ID: {timesearched[i][0]}\t NAME: {timesearched[i][1]}\t SEARCHES: {timesearched[i][-1]}' )
 
 #-------------------------SEARCHES PER CATERGORY--------------------------------#
-processors = []; gpus = []; motherboards = []; drives = []; usb = []; screens = []; speakers = []; headphones = []
+processors2 = []; gpus2 = []; motherboards2 = []; drives2 = []; usb2 = []; screens2 = []; speakers2 = []; headphones2 = []
 
 for item in timesearched:
     if categories[0] in item:
-        processors.append(item[:3])
+        processors2.append(item[:3])
     elif categories[1] in item:
-        gpus.append(item[:3])
+        gpus2.append(item[:3])
     elif categories[2] in item:
-        motherboards.append(item[:3])
+        motherboards2.append(item[:3])
     elif categories[3] in item:
-        drives.append(item[:3])
+        drives2.append(item[:3])
     elif categories[4] in item:
-        usb.append(item[:3])
+        usb2.append(item[:3])
     elif categories[5] in item:
-        screens.append(item[:3])
+        screens2.append(item[:3])
     elif categories[6] in item:
-        speakers.append(item[:3])
+        speakers2.append(item[:3])
     elif categories[7] in item:
-        headphones.append(item[:3])
+        headphones2.append(item[:3])
 
 print("\n LEAST SEARCHED PROCESSORS")
 for i in range(9):
-    print(f"ID: {processors[i][0]}\t NAME: {processors[i][1]}\t TIMES SEARCHED: {processors[i][-1]}")
+    print(f"ID: {processors2[i][0]}\t NAME: {processors2[i][1]}\t TIMES SEARCHED: {processors2[i][-1]}")
 
 print("\n LEAST SEARCHED GPUS")
 for i in range(10):
-    print(f"ID: {gpus[i][0]}\t NAME: {gpus[i][1]}\t TIMES SEARCHED: {gpus[i][2]}")
+    print(f"ID: {gpus2[i][0]}\t NAME: {gpus2[i][1]}\t TIMES SEARCHED: {gpus2[i][2]}")
 
 print("\n LEAST SEARCHED MOTHERBOARDS")
 for i in range(10):
-    print(f"ID: {motherboards[i][0]}\t NAME: {motherboards[i][1]}\t TIMES SEARCHED: {motherboards[i][-1]}")
+    print(f"ID: {motherboards2[i][0]}\t NAME: {motherboards2[i][1]}\t TIMES SEARCHED: {motherboards2[i][-1]}")
 
 print("\n LEAST SEARCHED DRIVES")
 for i in range(10):
-    print(f"ID: {drives[i][0]}\t NAME: {drives[i][1]}\t TIMES SEARCHED: {drives[i][-1]}")
+    print(f"ID: {drives2[i][0]}\t NAME: {drives2[i][1]}\t TIMES SEARCHED: {drives2[i][-1]}")
 
 print("\n LEAST SEARCHED USB")
 for i in range(2):
-    print(f"ID: {usb[i][0]}\t NAME: {usb[i][1]}\t TIMES SEARCHED: {usb[i][-1]}")
+    print(f"ID: {usb2[i][0]}\t NAME: {usb2[i][1]}\t TIMES SEARCHED: {usb2[i][-1]}")
 
 print("\n LEAST SEARCHED SCREENS")
 for i in range(10):
-    print(f"ID: {screens[i][0]}\t NAME: {screens[i][1]}\t TIMES SEARCHED: {screens[i][-1]}")
+    print(f"ID: {screens2[i][0]}\t NAME: {screens2[i][1]}\t TIMES SEARCHED: {screens2[i][-1]}")
 
 print("\n LEAST SEARCHED SPEAKERS")
 for i in range(10):
-    print(f"ID: {speakers[i][0]}\t NAME: {speakers[i][1]}\t TIMES SEARCHED: {speakers[i][-1]}")
+    print(f"ID: {speakers2[i][0]}\t NAME: {speakers2[i][1]}\t TIMES SEARCHED: {speakers2[i][-1]}")
 
 print("\n LEAST SEARCHED HEADPHONES")
 for i in range(10):
-    print(f"ID: {headphones[i][0]}\t NAME: {headphones[i][1]}\t TIMES SEARCHED: {headphones[i][-1]}")
+    print(f"ID: {headphones2[i][0]}\t NAME: {headphones2[i][1]}\t TIMES SEARCHED: {headphones2[i][-1]}")
 
 
 #----------------------REVIEWS--------------------------#
 tempsum=0; totalscore = []; averagescore = []
 
-for i in range(0,len(lifestore_products)): 
+"""for i in range(0,len(lifestore_products)): 
     for k in range(0,len(lifestore_sales)):
         if lifestore_sales[k][1]==timesold[i][0]:
             tempsum += lifestore_sales[k][2] #Adding up review scores
     
     totalscore.append(tempsum)
+    tempsum=0"""
+
+for product in lifestore_products: 
+    for review in lifestore_sales:
+        if product[0]==review[1]:
+            tempsum += review[2] #Adding up review scores
+    
+    totalscore.append(tempsum)
     tempsum=0
 
-for review in lifestore_products: #Creating a nested list
+ #timesold is [id_product, name, time_sold, category]
+
+"""for review in lifestore_products: #Creating a nested list
     nested=[]
     if timesold[review[0]-1][2] > 0: #Obtaining reviews from products sold at least once
         averagescore.append(nested)
@@ -212,6 +221,16 @@ for review in lifestore_products: #Creating a nested list
             nested.append(review[1])
             nested.append(timesold[review[0]-1][2]) #Times reviewed
             nested.append(totalscore[review[0]-1]/timesold[review[0]-1][2]) #Obtaining average
+"""
+for review in timesold: #Creating a nested list
+    nested=[]
+    if review[2] > 0: #Obtaining reviews from products sold at least once
+        averagescore.append(nested)
+        for k in range(1):
+            nested.append(review[0])
+            nested.append(review[1])
+            nested.append(review[2]) #Times reviewed
+            nested.append(totalscore[review[0]-1]/review[2]) #Obtaining average
 
 def Sort(averagescore):
     averagescore.sort(key = lambda x: x[-1])
@@ -316,5 +335,3 @@ salesxmonth = Sort(salesxmonth)
 print("\n HIGHEST AVERAGE TICKET PER MONTH")
 for i in [-1,-2,-3,-4,-5]:
     print( F'MONTH: {salesxmonth[i][0]}\t PROFIT: {"${:,.2f}".format(salesxmonth[i][1])}\t SALES: {salesxmonth[i][2]}\t AVERAGE: {salesxmonth[i][-1]}' )
-
-print(salesxmonth)
